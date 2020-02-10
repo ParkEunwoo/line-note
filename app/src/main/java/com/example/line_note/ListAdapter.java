@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             title = itemView.findViewById(R.id.title);
             content = itemView.findViewById(R.id.content);
             thumbnail = itemView.findViewById(R.id.thumbnail);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(), title.getText(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
