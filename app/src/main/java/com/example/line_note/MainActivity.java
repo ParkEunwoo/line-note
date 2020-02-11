@@ -25,11 +25,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ArrayList<Note> list = new ArrayList<Note>();
-        for (int i=0; i<15; i++) {
-            list.add(new Note("제목"+i, "내용입니당", "image"));
-        }
-
+        ArrayList<Note> list = Data.getInstance().getNoteList();
 
         RecyclerView recyclerView = findViewById(R.id.noteList) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(this)) ;
