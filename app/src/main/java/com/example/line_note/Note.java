@@ -40,7 +40,11 @@ public class Note {
     }
 
     public String getShortContent(){
-        return content.substring(0, 20);
+        if(content.length() > 20){
+            return content.substring(0, 20);
+        } else {
+            return content;
+        }
     }
 
     public String getThumbnail(){

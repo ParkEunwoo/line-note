@@ -59,23 +59,23 @@ public class EditActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which)
                             {
-                                Toast.makeText(getApplicationContext(),
-                                        oItems[which], Toast.LENGTH_LONG).show();
+                                if(which == 0) {
+
+                                    Intent intent = new Intent(Intent.ACTION_PICK);
+
+                                    intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+
+                                    intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                                    startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
+                                }
                             }
                         })
-                        .setCancelable(false)
+                        .setCancelable(true)
                         .show();
 
 
-/*
-                Intent intent = new Intent(Intent.ACTION_PICK);
 
-                intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
-
-                intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-                startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
-*/
             }
         });
 
@@ -89,7 +89,7 @@ public class EditActivity extends AppCompatActivity {
             }
         });
     }
-/*
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -190,5 +190,5 @@ public class EditActivity extends AppCompatActivity {
 
     }
 
-*/
+
 }

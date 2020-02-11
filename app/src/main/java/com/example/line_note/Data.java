@@ -32,8 +32,8 @@ public class Data {
         noteList = new ArrayList<Note>();
         for (int i=0; i<15; i++) {
             Note note = new Note();
-            note.setTitle("제목"+i);
-            note.setContent("내용");
+            note.setTitle("제목");
+            note.setContent("내용dfsjakljdflkas;jflkjasdlkfjkldsajfioenqinfdajkfjkldasfnklndksaf");
             noteList.add(note);
         }
     }
