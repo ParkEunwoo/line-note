@@ -60,13 +60,9 @@ public class EditActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which)
                             {
                                 if(which == 0) {
-
-                                    Intent intent = new Intent(Intent.ACTION_PICK);
-
-                                    intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
-
-                                    intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
+                                    Intent intent = new Intent();
+                                    intent.setType("image/*");
+                                    intent.setAction(Intent.ACTION_GET_CONTENT);
                                     startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
                                 }
                             }
@@ -93,63 +89,22 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-
-
-
-
-        Toast.makeText(getBaseContext(), "resultCode : "+resultCode, Toast.LENGTH_SHORT).show();
-
-
+        Toast.makeText(getBaseContext(), "resultCode : "+resultCode+"\n ok : "+RESULT_OK, Toast.LENGTH_SHORT).show();
 
         if(requestCode == REQ_CODE_SELECT_IMAGE)
 
         {
 
-            if(resultCode== Activity.RESULT_OK)
+            if(resultCode == Activity.RESULT_OK)
 
             {
 
                 try {
-
-                    //Uri에서 이미지 이름을 얻어온다.
-
-                    //String name_Str = getImageNameToUri(data.getData());
-
-
-
-                    //이미지 데이터를 비트맵으로 받아온다.
-
-                    Bitmap image_bitmap 	= MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-
+                    Uri uri = data.getData();
+                    newNote.addImage(uri);
                     ImageView image = (ImageView)findViewById(R.id.imageView);
+                    image.setImageURI(uri);
 
-
-
-                    //배치해놓은 ImageView에 set
-
-                    image.setImageBitmap(image_bitmap);
-
-
-
-
-
-                    //Toast.makeText(getBaseContext(), "name_Str : "+name_Str , Toast.LENGTH_SHORT).show();
-
-
-
-
-
-                } catch (FileNotFoundException e) {
-
-                    // TODO Auto-generated catch block
-
-                    e.printStackTrace();
-
-                } catch (IOException e) {
-
-                    // TODO Auto-generated catch block
-
-                    e.printStackTrace();
 
                 } catch (Exception e)
 
@@ -164,31 +119,5 @@ public class EditActivity extends AppCompatActivity {
         }
 
     }
-    public String getImageNameToUri(Uri data)
-
-    {
-
-        String[] proj = { MediaStore.Images.Media.DATA };
-
-        Cursor cursor = managedQuery(data, proj, null, null, null);
-
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-
-
-        cursor.moveToFirst();
-
-
-
-        String imgPath = cursor.getString(column_index);
-
-        String imgName = imgPath.substring(imgPath.lastIndexOf("/")+1);
-
-
-
-        return imgName;
-
-    }
-
 
 }

@@ -1,11 +1,13 @@
 package com.example.line_note;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 
 public class Note {
     private String title;
     private String content;
-    private ArrayList<String> images;
+    private ArrayList<Uri> images;
 
     Note() {
 
@@ -19,11 +21,11 @@ public class Note {
         this.content = content;
     }
 
-    public void addImage(String image) {
+    public void addImage(Uri image) {
         images.add(image);
     }
 
-    public void changeImage(int position, String image) {
+    public void changeImage(int position, Uri image) {
         images.set(position, image);
     }
 
@@ -47,7 +49,7 @@ public class Note {
         }
     }
 
-    public String getThumbnail(){
+    public Uri getThumbnail(){
         if(images.size()>0) {
             return images.get(0);
         } else {
