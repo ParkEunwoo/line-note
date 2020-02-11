@@ -41,7 +41,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext,EditActivity.class);
+                    Intent intent = new Intent(mContext,DetailActivity.class);
                     intent.putExtra("position", getAdapterPosition());
                     mContext.startActivity(intent);
                 }
