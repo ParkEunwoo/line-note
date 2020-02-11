@@ -1,6 +1,7 @@
 package com.example.line_note;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     private ArrayList<Note> mData = null;
+    private Context mContext;
 
-    ListAdapter(ArrayList<Note> list) {
-        mData = list ;
+    ListAdapter(Context context, ArrayList<Note> list) {
+        mData = list;
+        mContext = context;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -38,7 +41,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(view.getContext(), title.getText(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(mContext,EditActivity.class);
+                    intent.putExtra("position", getAdapterPosition());
+                    mContext.startActivity(intent);
                 }
             });
         }
