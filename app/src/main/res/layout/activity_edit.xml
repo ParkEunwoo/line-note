@@ -14,8 +14,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
+        android:hint="Title"
         android:inputType="textPersonName"
-        android:text="Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,8 +30,9 @@
         android:layout_marginBottom="8dp"
         android:ems="10"
         android:gravity="start|top"
+        android:hint="Content"
         android:inputType="textMultiLine"
-        app:layout_constraintBottom_toTopOf="@+id/edit"
+        app:layout_constraintBottom_toTopOf="@+id/complete"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/scrollView"
         app:layout_constraintTop_toBottomOf="@+id/title" />
@@ -43,18 +44,27 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/edit"
+        app:layout_constraintBottom_toTopOf="@+id/complete"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title">
 
         <LinearLayout
+            android:id="@+id/imageList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
+                app:srcCompat="@android:drawable/ic_menu_add" />
+        </LinearLayout>
     </ScrollView>
 
     <Button
-        android:id="@+id/edit"
+        android:id="@+id/complete"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
