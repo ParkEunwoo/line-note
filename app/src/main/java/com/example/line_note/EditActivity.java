@@ -3,6 +3,8 @@ package com.example.line_note;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -24,6 +26,8 @@ import java.io.IOException;
 
 public class EditActivity extends AppCompatActivity {
     final int REQ_CODE_SELECT_IMAGE=100;
+    final CharSequence[] oItems = {"갤러리", "사진촬영", "url링크"};
+
 
     EditText title;
     EditText content;
@@ -31,6 +35,7 @@ public class EditActivity extends AppCompatActivity {
     Button complete;
     LinearLayout imageList;
     Note newNote;
+    AlertDialog.Builder oDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +47,27 @@ public class EditActivity extends AppCompatActivity {
         complete = findViewById(R.id.complete);
         imageList = findViewById(R.id.imageList);
         newNote = new Note();
+        oDialog = new AlertDialog.Builder(this,
+                android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
 
         imageButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+                oDialog.setTitle("이미지 불러오기")
+                        .setItems(oItems, new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                Toast.makeText(getApplicationContext(),
+                                        oItems[which], Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .setCancelable(false)
+                        .show();
+
+
+/*
                 Intent intent = new Intent(Intent.ACTION_PICK);
 
                 intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
@@ -53,9 +75,7 @@ public class EditActivity extends AppCompatActivity {
                 intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
                 startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
-
-
-
+*/
             }
         });
 
@@ -69,7 +89,7 @@ public class EditActivity extends AppCompatActivity {
             }
         });
     }
-
+/*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -170,5 +190,5 @@ public class EditActivity extends AppCompatActivity {
 
     }
 
-
+*/
 }
