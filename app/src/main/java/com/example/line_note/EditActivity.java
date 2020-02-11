@@ -1,16 +1,21 @@
 package com.example.line_note;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +31,7 @@ import java.io.IOException;
 
 public class EditActivity extends AppCompatActivity {
     final int REQ_CODE_SELECT_IMAGE=100;
+    final int CAPTURE_IMAGE = 200;
     final CharSequence[] oItems = {"갤러리", "사진촬영", "url링크"};
 
 
@@ -64,6 +70,17 @@ public class EditActivity extends AppCompatActivity {
                                     intent.setType("image/*");
                                     intent.setAction(Intent.ACTION_GET_CONTENT);
                                     startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
+                                } else if(which == 1) {
+                                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                                    startActivityForResult(cameraIntent, CAPTURE_IMAGE);
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                                            Log.d("TAG", "권한 설정 완료");
+                                        } else {
+                                            Log.d("TAG", "권한 설정 요청");
+                                            ActivityCompat.requestPermissions(EditActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                                        }
+                                    }
                                 }
                             }
                         })
