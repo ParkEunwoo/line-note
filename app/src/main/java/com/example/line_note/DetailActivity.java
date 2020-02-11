@@ -16,6 +16,6 @@ public class DetailActivity extends AppCompatActivity {
         title=findViewById(R.id.title);
         Intent intent = getIntent();
         int position = intent.getIntExtra("position", 0);
-        title.setText("hello"+ title);
+        title.setText("hello" + position);
     }
 }
