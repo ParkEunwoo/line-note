@@ -64,8 +64,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Note note = mData.get(position) ;
-        holder.title.setText(note.title) ;
-        holder.content.setText(note.content) ;
+        holder.title.setText(note.getTitle()) ;
+        holder.content.setText(note.getShortContent()) ;
         holder.thumbnail.setBackgroundResource(R.drawable.ic_launcher_background);
     }
 
