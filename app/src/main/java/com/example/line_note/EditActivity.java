@@ -28,10 +28,13 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 
 public class EditActivity extends AppCompatActivity {
     final int REQ_CODE_SELECT_IMAGE=100;
     final int CAPTURE_IMAGE = 200;
+    final int NETWORK_URL = 300;
     final CharSequence[] oItems = {"갤러리", "사진촬영", "url링크"};
 
 
@@ -73,13 +76,18 @@ public class EditActivity extends AppCompatActivity {
                                 } else if(which == 1) {
                                     Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                                     startActivityForResult(cameraIntent, CAPTURE_IMAGE);
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                                            Log.d("TAG", "권한 설정 완료");
-                                        } else {
-                                            Log.d("TAG", "권한 설정 요청");
-                                            ActivityCompat.requestPermissions(EditActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                                        }
+
+                                } else if(which == 2) {/*
+                                    Intent urlIntent = new Intent();
+                                    startActivityForResult(urlIntent, NETWORK_URL);*/
+
+                                    try{
+                                        Uri uri = getUriFromUrl("https://www.oracle.com/a/ocom/img/hp11-intl-java-logo.jpg");
+                                        ImageView image = (ImageView)findViewById(R.id.imageView);
+                                        image.setImageURI(uri);
+                                    } catch (Exception e) {
+
+                                        e.printStackTrace();
                                     }
                                 }
                             }
@@ -102,17 +110,30 @@ public class EditActivity extends AppCompatActivity {
             }
         });
     }
+    public Uri getUriFromUrl(String thisUrl) {
+        try{
+            URL url = new URL(thisUrl);
+            Uri.Builder builder =  new Uri.Builder()
+                    .scheme(url.getProtocol())
+                    .authority(url.getAuthority())
+                    .appendPath(url.getPath());
+            return builder.build();
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         Toast.makeText(getBaseContext(), "resultCode : "+resultCode+"\n ok : "+RESULT_OK, Toast.LENGTH_SHORT).show();
 
-        if(requestCode == REQ_CODE_SELECT_IMAGE)
+        if(resultCode == Activity.RESULT_OK)
 
         {
 
-            if(resultCode == Activity.RESULT_OK)
+            if(requestCode == REQ_CODE_SELECT_IMAGE)
 
             {
 
@@ -129,6 +150,35 @@ public class EditActivity extends AppCompatActivity {
 
                     e.printStackTrace();
 
+                }
+
+            } else if(requestCode == CAPTURE_IMAGE) {
+                try {
+                    Uri uri = data.getData();
+                    newNote.addImage(uri);
+                    ImageView image = (ImageView)findViewById(R.id.imageView);
+                    image.setImageURI(uri);
+
+                }catch (Exception e)
+
+                {
+
+                    e.printStackTrace();
+
+                }
+            } else if(requestCode == NETWORK_URL) {
+                try{
+                    URL url = new URL("https://sdtimes.com/wp-content/uploads/2019/03/jW4dnFtA_400x400.jpg");
+                    Uri.Builder builder =  new Uri.Builder()
+                            .scheme(url.getProtocol())
+                            .authority(url.getAuthority())
+                            .appendPath(url.getPath());
+                    Uri uri = builder.build();
+                    ImageView image = (ImageView)findViewById(R.id.imageView);
+                    image.setImageURI(uri);
+                } catch (Exception e) {
+
+                    e.printStackTrace();
                 }
 
             }
