@@ -2,6 +2,7 @@ package com.example.line_note;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,10 +64,15 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Note note = mData.get(position) ;
+        Note note = mData.get(position);
+        Bitmap img = note.getThumbnail();
         holder.title.setText(note.getTitle()) ;
         holder.content.setText(note.getShortContent()) ;
-        holder.thumbnail.setBackgroundResource(R.drawable.ic_launcher_background);
+        if(img == null) {
+            holder.thumbnail.setBackgroundResource(R.drawable.ic_launcher_background);
+        } else {
+            holder.thumbnail.setImageBitmap(img);
+        }
     }
 
     @Override
