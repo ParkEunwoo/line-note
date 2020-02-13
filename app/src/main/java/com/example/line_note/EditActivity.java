@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.RippleDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -85,6 +86,7 @@ public class EditActivity extends AppCompatActivity {
                                         FutureTarget<Bitmap> futureTarget = Glide.with(EditActivity.this).asBitmap().load(uri).submit();
                                         Bitmap img = futureTarget.get();
                                         addImageView(img);
+                                        newNote.addImage(img);
                                         Glide.with(EditActivity.this).clear(futureTarget);
                                     } catch (Exception e) {
 
@@ -125,8 +127,11 @@ public class EditActivity extends AppCompatActivity {
             public void onClick(View view) {
                 newNote.setTitle(title.getText().toString());
                 newNote.setContent(content.getText().toString());
+                Data.getInstance().addNote(newNote);
                 Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                Intent intent = new Intent(EditActivity.this,MainActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -159,6 +164,7 @@ public class EditActivity extends AppCompatActivity {
                     in.close();
 
                     addImageView(img);
+                    newNote.addImage(img);
                 } catch (Exception e)
 
                 {
@@ -171,6 +177,7 @@ public class EditActivity extends AppCompatActivity {
                 try {
                     Bitmap img = (Bitmap) data.getExtras().get("data");
                     addImageView(img);
+                    newNote.addImage(img);
                 }catch (Exception e)
 
                 {
@@ -178,21 +185,6 @@ public class EditActivity extends AppCompatActivity {
                     e.printStackTrace();
 
                 }
-            } else if(requestCode == NETWORK_URL) {
-                try{
-                    URL url = new URL("https://sdtimes.com/wp-content/uploads/2019/03/jW4dnFtA_400x400.jpg");
-                    Uri.Builder builder =  new Uri.Builder()
-                            .scheme(url.getProtocol())
-                            .authority(url.getAuthority())
-                            .appendPath(url.getPath());
-                    Uri uri = builder.build();
-                    ImageView image = (ImageView)findViewById(R.id.imageView);
-                    image.setImageURI(uri);
-                } catch (Exception e) {
-
-                    e.printStackTrace();
-                }
-
             }
 
         }

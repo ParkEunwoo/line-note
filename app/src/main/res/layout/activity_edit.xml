@@ -61,12 +61,6 @@
                 android:background="#00FFFFFF"
                 app:srcCompat="@android:drawable/ic_menu_add" />
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/ic_launcher" />
-
         </LinearLayout>
     </ScrollView>
 

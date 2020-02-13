@@ -2,6 +2,7 @@ package com.example.line_note;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -11,7 +12,7 @@ public class Note {
     private ArrayList<Bitmap> images;
 
     Note() {
-
+        images = new ArrayList<Bitmap>();
     }
 
     public void setTitle(String title) {
