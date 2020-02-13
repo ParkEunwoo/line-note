@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -124,10 +125,15 @@ public class EditActivity extends AppCompatActivity {
         }
     }
 
+    public void addImageView(Uri uri) {
+        ImageView newImageView = new ImageView(this);
+        newImageView.setImageURI(uri);
+        imageList.addView(newImageView);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Toast.makeText(getBaseContext(), "resultCode : "+resultCode+"\n ok : "+RESULT_OK, Toast.LENGTH_SHORT).show();
 
         if(resultCode == Activity.RESULT_OK)
 
@@ -139,11 +145,8 @@ public class EditActivity extends AppCompatActivity {
 
                 try {
                     Uri uri = data.getData();
-                    newNote.addImage(uri);
-                    ImageView image = (ImageView)findViewById(R.id.imageView);
-                    image.setImageURI(uri);
-
-
+                    Toast.makeText(getBaseContext(), "uri : "+uri.toString(), Toast.LENGTH_SHORT).show();
+                    addImageView(uri);
                 } catch (Exception e)
 
                 {
@@ -155,9 +158,7 @@ public class EditActivity extends AppCompatActivity {
             } else if(requestCode == CAPTURE_IMAGE) {
                 try {
                     Uri uri = data.getData();
-                    newNote.addImage(uri);
-                    ImageView image = (ImageView)findViewById(R.id.imageView);
-                    image.setImageURI(uri);
+                    addImageView(uri);
 
                 }catch (Exception e)
 
