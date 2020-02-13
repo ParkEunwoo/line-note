@@ -1,5 +1,6 @@
 package com.example.line_note;
 
+import android.graphics.Bitmap;
 import android.net.Uri;
 
 import java.util.ArrayList;
@@ -7,7 +8,7 @@ import java.util.ArrayList;
 public class Note {
     private String title;
     private String content;
-    private ArrayList<Uri> images;
+    private ArrayList<Bitmap> images;
 
     Note() {
 
@@ -21,11 +22,11 @@ public class Note {
         this.content = content;
     }
 
-    public void addImage(Uri image) {
+    public void addImage(Bitmap image) {
         images.add(image);
     }
 
-    public void changeImage(int position, Uri image) {
+    public void changeImage(int position, Bitmap image) {
         images.set(position, image);
     }
 
@@ -49,7 +50,7 @@ public class Note {
         }
     }
 
-    public Uri getThumbnail(){
+    public Bitmap getThumbnail(){
         if(images.size()>0) {
             return images.get(0);
         } else {

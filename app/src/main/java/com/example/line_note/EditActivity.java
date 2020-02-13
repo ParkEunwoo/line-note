@@ -1,5 +1,6 @@
 package com.example.line_note;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -11,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,18 +27,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+
+import javax.sql.DataSource;
 
 public class EditActivity extends AppCompatActivity {
     final int REQ_CODE_SELECT_IMAGE=100;
     final int CAPTURE_IMAGE = 200;
     final int NETWORK_URL = 300;
-    final CharSequence[] oItems = {"갤러리", "사진촬영", "url링크"};
+    final CharSequence[] oItems = {"갤러리", "사진촬영"};
 
 
     EditText title;
@@ -60,10 +70,30 @@ public class EditActivity extends AppCompatActivity {
         oDialog = new AlertDialog.Builder(this,
                 android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
 
+        final EditText editText = new EditText(this);
+        editText.setHint("url");
+
         imageButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                oDialog.setTitle("이미지 불러오기")
+                oDialog.setTitle("이미지 불러오기").setView(editText).setPositiveButton("입력",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String uri = editText.getText().toString();
+                                if(uri != null){
+                                    try{
+                                        FutureTarget<Bitmap> futureTarget = Glide.with(EditActivity.this).asBitmap().load(uri).submit();
+                                        Bitmap img = futureTarget.get();
+                                        addImageView(img);
+                                        Glide.with(EditActivity.this).clear(futureTarget);
+                                    } catch (Exception e) {
+
+                                        e.printStackTrace();
+                                    }
+                                }
+                                Toast.makeText(getApplicationContext(),editText.getText().toString() ,Toast.LENGTH_LONG).show();
+                            }
+                        })
                         .setItems(oItems, new DialogInterface.OnClickListener()
                         {
                             @Override
@@ -78,18 +108,6 @@ public class EditActivity extends AppCompatActivity {
                                     Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                                     startActivityForResult(cameraIntent, CAPTURE_IMAGE);
 
-                                } else if(which == 2) {/*
-                                    Intent urlIntent = new Intent();
-                                    startActivityForResult(urlIntent, NETWORK_URL);*/
-
-                                    try{
-                                        Uri uri = getUriFromUrl("https://www.oracle.com/a/ocom/img/hp11-intl-java-logo.jpg");
-                                        ImageView image = (ImageView)findViewById(R.id.imageView);
-                                        image.setImageURI(uri);
-                                    } catch (Exception e) {
-
-                                        e.printStackTrace();
-                                    }
                                 }
                             }
                         })
@@ -101,6 +119,7 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
+
         complete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,23 +130,13 @@ public class EditActivity extends AppCompatActivity {
             }
         });
     }
-    public Uri getUriFromUrl(String thisUrl) {
-        try{
-            URL url = new URL(thisUrl);
-            Uri.Builder builder =  new Uri.Builder()
-                    .scheme(url.getProtocol())
-                    .authority(url.getAuthority())
-                    .appendPath(url.getPath());
-            return builder.build();
-        } catch(Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
-    public void addImageView(Uri uri) {
+    public void addImageView(Bitmap img) {
+        if(img == null) {
+            return ;
+        }
         ImageView newImageView = new ImageView(this);
-        newImageView.setImageURI(uri);
+        newImageView.setImageBitmap(img);
         imageList.addView(newImageView);
     }
 
@@ -144,9 +153,12 @@ public class EditActivity extends AppCompatActivity {
             {
 
                 try {
-                    Uri uri = data.getData();
-                    Toast.makeText(getBaseContext(), "uri : "+uri.toString(), Toast.LENGTH_SHORT).show();
-                    addImageView(uri);
+                    InputStream in = getContentResolver().openInputStream(data.getData());
+
+                    Bitmap img = BitmapFactory.decodeStream(in);
+                    in.close();
+
+                    addImageView(img);
                 } catch (Exception e)
 
                 {
@@ -157,9 +169,8 @@ public class EditActivity extends AppCompatActivity {
 
             } else if(requestCode == CAPTURE_IMAGE) {
                 try {
-                    Uri uri = data.getData();
-                    addImageView(uri);
-
+                    Bitmap img = (Bitmap) data.getExtras().get("data");
+                    addImageView(img);
                 }catch (Exception e)
 
                 {
