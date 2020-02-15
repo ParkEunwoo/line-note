@@ -1,5 +1,16 @@
 package com.example.line_note;
 
+import android.content.Context;
+import android.security.keystore.KeyGenParameterSpec;
+import android.util.Log;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
 public class Data {
@@ -38,4 +49,47 @@ public class Data {
         }
     }
 
+    public void saveData(Context context){
+        String filename = "myfile";
+        String fileContents = "Hello world!";
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(fileContents.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadData(Context context) {
+        File directory = context.getFilesDir();
+        File file = new File(directory, "myfile");
+        FileInputStream inputStream;
+        String data = "";
+        int size;
+        byte[] buf;
+
+        if (file.exists() && file.canRead()) {
+            try {
+                // open file.
+                inputStream = new FileInputStream(file) ;
+
+                size = inputStream.available();
+                buf = new byte[size] ;
+                // read file.
+                while ((size = inputStream.read(buf)) != -1) {
+                    data += new String(buf, "UTF-8");
+                }
+                Log.d("data", data);
+
+                // close file.
+                inputStream.close() ;
+            } catch (Exception e) {
+                e.printStackTrace() ;
+            }
+        }
+
+    }
 }

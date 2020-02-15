@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         ArrayList<Note> list = Data.getInstance().getNoteList();
+        Data.getInstance().loadData(this);
 
         RecyclerView recyclerView = findViewById(R.id.noteList) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(this)) ;
