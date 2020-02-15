@@ -28,7 +28,7 @@ public class EditActivity extends AppCompatActivity {
     final int CAPTURE_IMAGE = 200;
     final int NETWORK_URL = 300;
     final CharSequence[] oItems = {"갤러리", "사진촬영"};
-
+    int position;
 
     EditText title;
     EditText content;
@@ -42,6 +42,7 @@ public class EditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
+
         title = findViewById(R.id.title);
         content = findViewById(R.id.content);
         imageButton = findViewById(R.id.imageButton);
@@ -53,6 +54,22 @@ public class EditActivity extends AppCompatActivity {
 
         final EditText editText = new EditText(this);
         editText.setHint("url");
+
+
+        Intent intent = getIntent();
+        position = intent.getIntExtra("position", -1);
+        if(position == -1) {
+            newNote = Data.getInstance().getNote(position);
+            title.setText(newNote.getTitle());
+            content.setText(newNote.getContent());
+
+            int size = newNote.getImageNum();
+            for(int i=0;i<size;i++) {
+                ImageView newImageView = new ImageView(this);
+                newImageView.setImageBitmap(newNote.getImage(i));
+                imageList.addView(newImageView);
+            }
+        }
 
         imageButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -107,7 +124,11 @@ public class EditActivity extends AppCompatActivity {
             public void onClick(View view) {
                 newNote.setTitle(title.getText().toString());
                 newNote.setContent(content.getText().toString());
-                Data.getInstance().addNote(newNote);
+                if(position > -1) {
+                    Data.getInstance().modifyNote(position, newNote);
+                } else {
+                    Data.getInstance().addNote(newNote);
+                }
                 Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 Intent intent = new Intent(EditActivity.this,MainActivity.class);
