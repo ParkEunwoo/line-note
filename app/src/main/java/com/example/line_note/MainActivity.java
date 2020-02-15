@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             }
         }
+        Data.getInstance().setContext(this);
         ArrayList<Note> list = Data.getInstance().getNoteList();
-        Data.getInstance().loadData(this);
 
         RecyclerView recyclerView = findViewById(R.id.noteList) ;
         recyclerView.setLayoutManager(new LinearLayoutManager(this)) ;

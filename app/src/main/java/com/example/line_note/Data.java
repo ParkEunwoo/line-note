@@ -4,6 +4,9 @@ import android.content.Context;
 import android.security.keystore.KeyGenParameterSpec;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,14 +15,25 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Data {
     private static final Data ourInstance = new Data();
     private ArrayList<Note>  noteList;
+    private Context context;
 
     public static Data getInstance() {
         return ourInstance;
     }
+
+    public void setContext(Context ctx) {
+        if(context == null){
+            context=ctx;
+            loadData(ctx);
+        }
+    }
+
     public ArrayList<Note> getNoteList(){
         return noteList;
     }
@@ -29,29 +43,45 @@ public class Data {
 
     public void addNote(Note newNote) {
         noteList.add(newNote);
+        saveData(context);
     }
 
     public void modifyNote(int position, Note modifiedNote) {
         noteList.set(position, modifiedNote);
+        saveData(context);
     }
 
     public void removeNote(int position) {
         noteList.remove(position);
+        saveData(context);
     }
 
     private Data() {
         noteList = new ArrayList<Note>();
-        for (int i=0; i<5; i++) {
+        context = null;
+        /*for (int i=0; i<5; i++) {
             Note note = new Note();
             note.setTitle("제목");
-            note.setContent("내용dfsjakljdflkas;jflkjasdlkfjkldsajfioenqinfdajkfjkldasfnklndksaf");
+            note.setContent("내용");
             noteList.add(note);
-        }
+        }*/
+    }
+
+    private String toJson () {
+        Gson gson = new Gson();
+        String json = gson.toJson(noteList);
+        return json;
+    }
+
+    private ArrayList<Note> parseJson(String json){
+        Gson gson = new Gson();
+        ArrayList<Note> list = gson.fromJson(json, new TypeToken<ArrayList<Note>>(){}.getType());
+        return list;
     }
 
     public void saveData(Context context){
-        String filename = "myfile";
-        String fileContents = "Hello world!";
+        String filename = "data.json";
+        String fileContents = toJson();
         FileOutputStream outputStream;
 
         try {
@@ -65,7 +95,7 @@ public class Data {
 
     public void loadData(Context context) {
         File directory = context.getFilesDir();
-        File file = new File(directory, "myfile");
+        File file = new File(directory, "data.json");
         FileInputStream inputStream;
         String data = "";
         int size;
@@ -77,12 +107,17 @@ public class Data {
                 inputStream = new FileInputStream(file) ;
 
                 size = inputStream.available();
-                buf = new byte[size] ;
+                if(size < 512){
+                    buf = new byte[size] ;
+                } else {
+                    buf = new byte[512];
+                }
                 // read file.
-                while ((size = inputStream.read(buf)) != -1) {
+                while (inputStream.read(buf) != -1) {
                     data += new String(buf, "UTF-8");
                 }
                 Log.d("data", data);
+                noteList = parseJson(data);
 
                 // close file.
                 inputStream.close() ;
