@@ -1,47 +1,27 @@
 package com.example.line_note;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.RippleDrawable;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.FutureTarget;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
-
-import javax.sql.DataSource;
 
 public class EditActivity extends AppCompatActivity {
     final int REQ_CODE_SELECT_IMAGE=100;
@@ -65,7 +45,7 @@ public class EditActivity extends AppCompatActivity {
         title = findViewById(R.id.title);
         content = findViewById(R.id.content);
         imageButton = findViewById(R.id.imageButton);
-        complete = findViewById(R.id.complete);
+        complete = findViewById(R.id.edit);
         imageList = findViewById(R.id.imageList);
         newNote = new Note();
         oDialog = new AlertDialog.Builder(this,

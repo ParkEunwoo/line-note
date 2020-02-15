@@ -27,7 +27,7 @@ public class Data {
         return ourInstance;
     }
 
-    public void setContext(Context ctx) {
+    public void initContext(Context ctx) {
         if(context == null){
             context=ctx;
             loadData(ctx);

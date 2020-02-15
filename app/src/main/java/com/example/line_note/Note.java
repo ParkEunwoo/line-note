@@ -43,6 +43,10 @@ public class Note {
         return content;
     }
 
+    public int getImageNum() {return images.size(); }
+
+    public Bitmap getImage(int position) {return images.get(position); }
+
     public String getShortContent(){
         if(content.length() > 20){
             return content.substring(0, 20);
