@@ -69,7 +69,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         holder.title.setText(note.getTitle()) ;
         holder.content.setText(note.getShortContent()) ;
         if(img == null) {
-            holder.thumbnail.setBackgroundResource(R.drawable.ic_launcher_background);
+            holder.thumbnail.setBackgroundResource(R.drawable.ic_no_image);
         } else {
             holder.thumbnail.setImageBitmap(img);
         }
