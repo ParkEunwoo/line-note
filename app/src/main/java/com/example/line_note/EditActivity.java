@@ -96,9 +96,13 @@ public class EditActivity extends AppCompatActivity {
                                             @Override
                                             public void onLoadCleared(@Nullable Drawable placeholder) {
                                             }
+                                            @Override
+                                            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                                                Toast.makeText(getApplicationContext(), "이미지를 불러올 수 없습니다.", Toast.LENGTH_LONG).show();
+                                            }
                                         });
                                     } catch (Exception e) {
-
+                                        Toast.makeText(getApplicationContext(), "이미지를 불러올 수 없습니다.", Toast.LENGTH_LONG).show();
                                         e.printStackTrace();
                                     }
                                 }
