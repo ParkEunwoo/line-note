@@ -1,5 +1,7 @@
 package com.example.line_note;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -12,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -27,13 +30,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public class EditActivity extends AppCompatActivity {
-    final int REQ_CODE_SELECT_IMAGE=100;
+    final int REQ_CODE_SELECT_IMAGE = 100;
     final int CAPTURE_IMAGE = 200;
     final int NETWORK_URL = 300;
     final CharSequence[] oItems = {"갤러리", "사진촬영"};
@@ -77,23 +82,28 @@ public class EditActivity extends AppCompatActivity {
 
         }).
                 setPositiveButton("확인",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        String uri = editText.getText().toString();
-                        if(uri != null){
-                            try{
-                                FutureTarget<Bitmap> futureTarget = Glide.with(EditActivity.this).asBitmap().load(uri).submit();
-                                Bitmap img = futureTarget.get();
-                                addImageView(img, newNote.addImage(img, getApplicationContext()));
-                                Glide.with(EditActivity.this).clear(futureTarget);
-                            } catch (Exception e) {
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String uri = editText.getText().toString();
+                                if (uri != null) {
+                                    try {
+                                        Glide.with(getApplicationContext()).asBitmap().load(uri).into(new CustomTarget<Bitmap>() {
+                                            @Override
+                                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                                addImageView(resource, newNote.addImage(resource, getApplicationContext()));
+                                            }
 
-                                e.printStackTrace();
+                                            @Override
+                                            public void onLoadCleared(@Nullable Drawable placeholder) {
+                                            }
+                                        });
+                                    } catch (Exception e) {
+
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
-                        }
-                        Toast.makeText(getApplicationContext(),editText.getText().toString() ,Toast.LENGTH_LONG).show();
-                    }
-                }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        }).setOnCancelListener(new DialogInterface.OnCancelListener() {
 
             @Override
 
@@ -104,17 +114,15 @@ public class EditActivity extends AppCompatActivity {
             }
 
         })
-                .setItems(oItems, new DialogInterface.OnClickListener()
-                {
+                .setItems(oItems, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        if(which == 0) {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
                             Intent intent = new Intent();
                             intent.setType("image/*");
                             intent.setAction(Intent.ACTION_GET_CONTENT);
                             startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
-                        } else if(which == 1) {
+                        } else if (which == 1) {
                             Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                             startActivityForResult(cameraIntent, CAPTURE_IMAGE);
 
@@ -127,18 +135,18 @@ public class EditActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         position = intent.getIntExtra("position", -1);
-        if(position > -1) {
+        if (position > -1) {
             newNote = Data.getInstance().getNote(position);
             title.setText(newNote.getTitle());
             content.setText(newNote.getContent());
 
             int size = newNote.getImageNum();
-            for(int i=0;i<size;i++) {
+            for (int i = 0; i < size; i++) {
                 addImageView(newNote.getImage(i, this), newNote.getImageId(i));
             }
         }
 
-        imageButton.setOnClickListener(new View.OnClickListener(){
+        imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDialog(DIALOG_ID);
@@ -151,7 +159,7 @@ public class EditActivity extends AppCompatActivity {
             public void onClick(View view) {
                 newNote.setTitle(title.getText().toString());
                 newNote.setContent(content.getText().toString());
-                if(position > -1) {
+                if (position > -1) {
                     Data.getInstance().modifyNote(position, newNote);
                     Snackbar.make(view, "노트가 변경되었습니다.", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
@@ -160,11 +168,12 @@ public class EditActivity extends AppCompatActivity {
                     Snackbar.make(view, "새 노트가 추가되었습니다.", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
-                Intent intent = new Intent(EditActivity.this,MainActivity.class);
+                Intent intent = new Intent(EditActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
     }
+
     @Override
     protected Dialog onCreateDialog(int id, Bundle bundle) {
 
@@ -181,9 +190,10 @@ public class EditActivity extends AppCompatActivity {
         }
 
     }
+
     public void addImageView(Bitmap img, final String id) {
-        if(img == null) {
-            return ;
+        if (img == null) {
+            return;
         }
         final FrameLayout layout = new FrameLayout(this);
         FrameLayout.LayoutParams param = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, getDpSize(100));
@@ -195,10 +205,10 @@ public class EditActivity extends AppCompatActivity {
 
         ImageButton delete = new ImageButton(this);
         delete.setImageResource(R.drawable.ic_close_red_24dp);
-        delete.setBackgroundColor(Color.argb(0,0,0,0));
+        delete.setBackgroundColor(Color.argb(0, 0, 0, 0));
 
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(getDpSize(20), getDpSize(20));
-        params.gravity = Gravity.TOP|Gravity.END;
+        params.gravity = Gravity.TOP | Gravity.END;
         delete.setLayoutParams(params);
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,13 +230,9 @@ public class EditActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
-        if(resultCode == Activity.RESULT_OK)
+        if (resultCode == Activity.RESULT_OK) {
 
-        {
-
-            if(requestCode == REQ_CODE_SELECT_IMAGE)
-
-            {
+            if (requestCode == REQ_CODE_SELECT_IMAGE) {
 
                 try {
                     InputStream in = getContentResolver().openInputStream(data.getData());
@@ -236,17 +242,15 @@ public class EditActivity extends AppCompatActivity {
                     in.close();
 
                     addImageView(img, newNote.addImage(img, getApplicationContext()));
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-            } else if(requestCode == CAPTURE_IMAGE) {
+            } else if (requestCode == CAPTURE_IMAGE) {
                 try {
                     Bitmap img = (Bitmap) data.getExtras().get("data");
                     addImageView(img, newNote.addImage(img, getApplicationContext()));
-                }catch (Exception e)
-                {
+                } catch (Exception e) {
 
                     e.printStackTrace();
 
@@ -256,6 +260,7 @@ public class EditActivity extends AppCompatActivity {
         }
 
     }
+
     private Bitmap resize(Context context, Uri uri, int resize) {
         Bitmap resizeBitmap = null;
 
