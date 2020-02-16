@@ -55,21 +55,6 @@ public class Note {
         return id;
     }
 
-    public void changeImage(int position, Bitmap image, Context context) {
-        String filename = images.get(position);
-        File file = new File(context.getFilesDir(), filename);
-
-        FileOutputStream outputStream;
-
-        try {
-            file.createNewFile();
-            outputStream = new FileOutputStream(file);
-            image.compress(Bitmap.CompressFormat.JPEG,10,outputStream);
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public void deleteImage(int position, Context context) {
         context.deleteFile(images.get(position));

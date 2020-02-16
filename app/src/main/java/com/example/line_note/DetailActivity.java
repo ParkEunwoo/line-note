@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +38,7 @@ public class DetailActivity extends AppCompatActivity {
         for(int i=0;i<size;i++) {
             ImageView newImageView = new ImageView(this);
             newImageView.setImageBitmap(note.getImage(i, this));
+            newImageView.setLayoutParams(new LinearLayout.LayoutParams(getDpSize(100), getDpSize(100)));
             imageList.addView(newImageView);
         }
 
@@ -47,5 +50,8 @@ public class DetailActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+    public int getDpSize(int size) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, getResources().getDisplayMetrics());
     }
 }
