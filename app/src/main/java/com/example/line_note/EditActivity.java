@@ -66,7 +66,7 @@ public class EditActivity extends AppCompatActivity {
             int size = newNote.getImageNum();
             for(int i=0;i<size;i++) {
                 ImageView newImageView = new ImageView(this);
-                //newImageView.setImageBitmap(newNote.getImage(i));
+                newImageView.setImageBitmap(newNote.getImage(i, this));
                 imageList.addView(newImageView);
             }
         }
@@ -136,7 +136,6 @@ public class EditActivity extends AppCompatActivity {
             }
         });
     }
-
     public void addImageView(Bitmap img) {
         if(img == null) {
             return ;
@@ -167,11 +166,8 @@ public class EditActivity extends AppCompatActivity {
                     addImageView(img);
                     newNote.addImage(img, getApplicationContext());
                 } catch (Exception e)
-
                 {
-
                     e.printStackTrace();
-
                 }
 
             } else if(requestCode == CAPTURE_IMAGE) {

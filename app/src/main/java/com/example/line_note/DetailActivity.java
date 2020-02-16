@@ -35,7 +35,7 @@ public class DetailActivity extends AppCompatActivity {
         int size = note.getImageNum();
         for(int i=0;i<size;i++) {
             ImageView newImageView = new ImageView(this);
-            //newImageView.setImageBitmap(note.getImage(i));
+            newImageView.setImageBitmap(note.getImage(i, this));
             imageList.addView(newImageView);
         }
 

@@ -2,6 +2,7 @@ package com.example.line_note;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
@@ -64,7 +65,12 @@ public class Note {
 
     public int getImageNum() {return images.size(); }
 
-    public String getImage(int position) {return images.get(position); }
+    public Bitmap getImage(int position, Context context) {
+        String filename = images.get(position);
+        String path = context.getFilesDir() + "/" + filename;
+        Bitmap image = BitmapFactory.decodeFile(path);
+        return image;
+    }
 
     public String getShortContent(){
         if(content.length() > 20){
@@ -74,9 +80,9 @@ public class Note {
         }
     }
 
-    public String getThumbnail(){
-        if(images.size()>0) {
-            return images.get(0);
+    public Bitmap getThumbnail(Context context){
+        if(getImageNum()>0) {
+            return getImage(0, context);
         } else {
             return null;
         }
