@@ -28,8 +28,17 @@ public class Note {
         this.content = content;
     }
 
-    public void addImage(Bitmap image, Context context) {
-        String filename = UUID.randomUUID().toString() + ".jpg";
+    public String getImageId(int position) {
+        return images.get(position);
+    }
+
+    public int findIndexById(String id) {
+        return images.indexOf(id);
+    }
+
+    public String addImage(Bitmap image, Context context) {
+        String id = UUID.randomUUID().toString();
+        String filename = id + ".jpg";
         File file = new File(context.getFilesDir(), filename);
 
         FileOutputStream outputStream;
@@ -42,9 +51,8 @@ public class Note {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         images.add(filename);
+        return id;
     }
 
     public void changeImage(int position, Bitmap image, Context context) {

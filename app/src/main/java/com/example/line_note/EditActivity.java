@@ -69,7 +69,7 @@ public class EditActivity extends AppCompatActivity {
 
             int size = newNote.getImageNum();
             for(int i=0;i<size;i++) {
-                addImageView(newNote.getImage(i, this));
+                addImageView(newNote.getImage(i, this), newNote.getImageId(i));
             }
         }
 
@@ -84,8 +84,7 @@ public class EditActivity extends AppCompatActivity {
                                     try{
                                         FutureTarget<Bitmap> futureTarget = Glide.with(EditActivity.this).asBitmap().load(uri).submit();
                                         Bitmap img = futureTarget.get();
-                                        addImageView(img);
-                                        newNote.addImage(img, getApplicationContext());
+                                        addImageView(img, newNote.addImage(img, getApplicationContext()));
                                         Glide.with(EditActivity.this).clear(futureTarget);
                                     } catch (Exception e) {
 
@@ -138,13 +137,12 @@ public class EditActivity extends AppCompatActivity {
             }
         });
     }
-    public void addImageView(Bitmap img) {
+    public void addImageView(Bitmap img, final String id) {
         if(img == null) {
             return ;
         }
-        FrameLayout layout = new FrameLayout(this);
-        layout.setBackgroundColor(Color.BLUE);
-        FrameLayout.LayoutParams param = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics()));
+        final FrameLayout layout = new FrameLayout(this);
+        FrameLayout.LayoutParams param = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, getDpSize(100));
         layout.setLayoutParams(param);
 
         ImageView newImageView = new ImageView(this);
@@ -152,13 +150,26 @@ public class EditActivity extends AppCompatActivity {
         newImageView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
 
         ImageButton delete = new ImageButton(this);
-        delete.setImageResource(R.drawable.ic_launcher_background);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, getResources().getDisplayMetrics()), (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, getResources().getDisplayMetrics()));
+        delete.setImageResource(R.drawable.ic_close_red_24dp);
+        delete.setBackgroundColor(Color.argb(0,0,0,0));
+
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(getDpSize(20), getDpSize(20));
         params.gravity = Gravity.TOP|Gravity.END;
         delete.setLayoutParams(params);
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                newNote.deleteImage(newNote.findIndexById(id), getApplicationContext());
+                imageList.removeView(layout);
+            }
+        });
         layout.addView(newImageView);
         layout.addView(delete);
         imageList.addView(layout);
+    }
+
+    public int getDpSize(int size) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, getResources().getDisplayMetrics());
     }
 
     @Override
@@ -179,8 +190,7 @@ public class EditActivity extends AppCompatActivity {
                     Bitmap img = BitmapFactory.decodeStream(in);
                     in.close();
 
-                    addImageView(img);
-                    newNote.addImage(img, getApplicationContext());
+                    addImageView(img, newNote.addImage(img, getApplicationContext()));
                 } catch (Exception e)
                 {
                     e.printStackTrace();
@@ -189,8 +199,7 @@ public class EditActivity extends AppCompatActivity {
             } else if(requestCode == CAPTURE_IMAGE) {
                 try {
                     Bitmap img = (Bitmap) data.getExtras().get("data");
-                    addImageView(img);
-                    newNote.addImage(img, getApplicationContext());
+                    addImageView(img, newNote.addImage(img, getApplicationContext()));
                 }catch (Exception e)
                 {
 
