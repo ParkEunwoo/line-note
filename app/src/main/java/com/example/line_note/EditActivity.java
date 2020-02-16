@@ -58,7 +58,7 @@ public class EditActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         position = intent.getIntExtra("position", -1);
-        if(position == -1) {
+        if(position > -1) {
             newNote = Data.getInstance().getNote(position);
             title.setText(newNote.getTitle());
             content.setText(newNote.getContent());
@@ -66,7 +66,7 @@ public class EditActivity extends AppCompatActivity {
             int size = newNote.getImageNum();
             for(int i=0;i<size;i++) {
                 ImageView newImageView = new ImageView(this);
-                newImageView.setImageBitmap(newNote.getImage(i));
+                //newImageView.setImageBitmap(newNote.getImage(i));
                 imageList.addView(newImageView);
             }
         }
@@ -83,7 +83,7 @@ public class EditActivity extends AppCompatActivity {
                                         FutureTarget<Bitmap> futureTarget = Glide.with(EditActivity.this).asBitmap().load(uri).submit();
                                         Bitmap img = futureTarget.get();
                                         addImageView(img);
-                                        newNote.addImage(img);
+                                        newNote.addImage(img, getApplicationContext());
                                         Glide.with(EditActivity.this).clear(futureTarget);
                                     } catch (Exception e) {
 
@@ -165,7 +165,7 @@ public class EditActivity extends AppCompatActivity {
                     in.close();
 
                     addImageView(img);
-                    newNote.addImage(img);
+                    newNote.addImage(img, getApplicationContext());
                 } catch (Exception e)
 
                 {
@@ -178,9 +178,8 @@ public class EditActivity extends AppCompatActivity {
                 try {
                     Bitmap img = (Bitmap) data.getExtras().get("data");
                     addImageView(img);
-                    newNote.addImage(img);
+                    newNote.addImage(img, getApplicationContext());
                 }catch (Exception e)
-
                 {
 
                     e.printStackTrace();

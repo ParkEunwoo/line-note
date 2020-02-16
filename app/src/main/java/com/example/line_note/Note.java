@@ -1,18 +1,22 @@
 package com.example.line_note;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Note {
     private String title;
     private String content;
-    private ArrayList<Bitmap> images;
+    private ArrayList<String> images;
 
     Note() {
-        images = new ArrayList<Bitmap>();
+        images = new ArrayList<String>();
     }
 
     public void setTitle(String title) {
@@ -23,11 +27,26 @@ public class Note {
         this.content = content;
     }
 
-    public void addImage(Bitmap image) {
-        images.add(image);
+    public void addImage(Bitmap image, Context context) {
+        String filename = UUID.randomUUID().toString() + ".jpg";
+        File file = new File(context.getFilesDir(), filename);
+
+        FileOutputStream outputStream;
+
+        try {
+            file.createNewFile();
+            outputStream = new FileOutputStream(file);
+            image.compress(Bitmap.CompressFormat.JPEG,10,outputStream);
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        images.add(filename);
     }
 
-    public void changeImage(int position, Bitmap image) {
+    public void changeImage(int position, String image) {
         images.set(position, image);
     }
 
@@ -45,7 +64,7 @@ public class Note {
 
     public int getImageNum() {return images.size(); }
 
-    public Bitmap getImage(int position) {return images.get(position); }
+    public String getImage(int position) {return images.get(position); }
 
     public String getShortContent(){
         if(content.length() > 20){
@@ -55,7 +74,7 @@ public class Note {
         }
     }
 
-    public Bitmap getThumbnail(){
+    public String getThumbnail(){
         if(images.size()>0) {
             return images.get(0);
         } else {

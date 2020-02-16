@@ -107,6 +107,9 @@ public class Data {
                 inputStream = new FileInputStream(file) ;
 
                 size = inputStream.available();
+                if(size == 0) {
+                    return;
+                }
                 if(size < 512){
                     buf = new byte[size] ;
                 } else {
