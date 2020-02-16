@@ -172,8 +172,7 @@ public class EditActivity extends AppCompatActivity {
                     Snackbar.make(view, "새 노트가 추가되었습니다.", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
-                Intent intent = new Intent(EditActivity.this, MainActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
     }

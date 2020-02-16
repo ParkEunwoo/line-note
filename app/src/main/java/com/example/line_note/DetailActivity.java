@@ -47,11 +47,18 @@ public class DetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(DetailActivity.this,EditActivity.class);
                 intent.putExtra("position", position);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
     }
     public int getDpSize(int size) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, getResources().getDisplayMetrics());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
     }
 }
