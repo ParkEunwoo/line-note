@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -65,9 +67,7 @@ public class EditActivity extends AppCompatActivity {
 
             int size = newNote.getImageNum();
             for(int i=0;i<size;i++) {
-                ImageView newImageView = new ImageView(this);
-                newImageView.setImageBitmap(newNote.getImage(i, this));
-                imageList.addView(newImageView);
+                addImageView(newNote.getImage(i, this));
             }
         }
 
@@ -140,9 +140,20 @@ public class EditActivity extends AppCompatActivity {
         if(img == null) {
             return ;
         }
+        FrameLayout layout = new FrameLayout(this);
+
         ImageView newImageView = new ImageView(this);
         newImageView.setImageBitmap(img);
-        imageList.addView(newImageView);
+        newImageView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+
+        ImageButton delete = new ImageButton(this);
+        delete.setImageResource(R.drawable.ic_launcher_background);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.TOP|Gravity.END;
+        delete.setLayoutParams(params);
+        layout.addView(newImageView);
+        layout.addView(delete);
+        imageList.addView(layout);
     }
 
     @Override
