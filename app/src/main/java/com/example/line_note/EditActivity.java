@@ -4,11 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -25,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public class EditActivity extends AppCompatActivity {
@@ -59,6 +63,42 @@ public class EditActivity extends AppCompatActivity {
         final EditText editText = new EditText(this);
         editText.setHint("url");
 
+        oDialog.setTitle("이미지 불러오기").setView(editText).setPositiveButton("입력",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String uri = editText.getText().toString();
+                        if(uri != null){
+                            try{
+                                FutureTarget<Bitmap> futureTarget = Glide.with(EditActivity.this).asBitmap().load(uri).submit();
+                                Bitmap img = futureTarget.get();
+                                addImageView(img, newNote.addImage(img, getApplicationContext()));
+                                Glide.with(EditActivity.this).clear(futureTarget);
+                            } catch (Exception e) {
+
+                                e.printStackTrace();
+                            }
+                        }
+                        Toast.makeText(getApplicationContext(),editText.getText().toString() ,Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setItems(oItems, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        if(which == 0) {
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
+                        } else if(which == 1) {
+                            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(cameraIntent, CAPTURE_IMAGE);
+
+                        }
+                    }
+                })
+                .setCancelable(true);
 
         Intent intent = getIntent();
         position = intent.getIntExtra("position", -1);
@@ -76,46 +116,7 @@ public class EditActivity extends AppCompatActivity {
         imageButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                oDialog.setTitle("이미지 불러오기").setView(editText).setPositiveButton("입력",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                String uri = editText.getText().toString();
-                                if(uri != null){
-                                    try{
-                                        FutureTarget<Bitmap> futureTarget = Glide.with(EditActivity.this).asBitmap().load(uri).submit();
-                                        Bitmap img = futureTarget.get();
-                                        addImageView(img, newNote.addImage(img, getApplicationContext()));
-                                        Glide.with(EditActivity.this).clear(futureTarget);
-                                    } catch (Exception e) {
-
-                                        e.printStackTrace();
-                                    }
-                                }
-                                Toast.makeText(getApplicationContext(),editText.getText().toString() ,Toast.LENGTH_LONG).show();
-                            }
-                        })
-                        .setItems(oItems, new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                if(which == 0) {
-                                    Intent intent = new Intent();
-                                    intent.setType("image/*");
-                                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                                    startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
-                                } else if(which == 1) {
-                                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                                    startActivityForResult(cameraIntent, CAPTURE_IMAGE);
-
-                                }
-                            }
-                        })
-                        .setCancelable(true)
-                        .show();
-
-
-
+                oDialog.show();
             }
         });
 
@@ -186,7 +187,8 @@ public class EditActivity extends AppCompatActivity {
 
                 try {
                     InputStream in = getContentResolver().openInputStream(data.getData());
-
+                    BitmapFactory.Options option = new BitmapFactory.Options();
+                    option.inSampleSize = 4;
                     Bitmap img = BitmapFactory.decodeStream(in);
                     in.close();
 
@@ -211,5 +213,32 @@ public class EditActivity extends AppCompatActivity {
         }
 
     }
+    private Bitmap resize(Context context, Uri uri, int resize) {
+        Bitmap resizeBitmap = null;
 
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        try {
+            BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options); // 이미지의 크기를 options 에 담아줌
+
+            int width = options.outWidth;
+            int height = options.outHeight;
+            int samplesize = 1; // 숫자가 클수록 용량이 작아짐, 4 라고 하면 4픽셀을 1픽셀로 만들어줌
+
+            while (true) { //가로세로 크기를 리사이즈크기에 최대한 맞춰서 작을때까지 반복함.
+                if (width / 2 < resize || height / 2 < resize)
+                    break;
+                width /= 2;
+                height /= 2;
+                samplesize *= 2;
+            }
+
+            options.inSampleSize = samplesize;
+            Bitmap bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options); //정해진 샘플사이즈로 비트맵을 다시만든다
+            resizeBitmap = bitmap;
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return resizeBitmap;
+    }
 }
