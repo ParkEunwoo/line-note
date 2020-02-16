@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,6 +37,7 @@ public class EditActivity extends AppCompatActivity {
     final int CAPTURE_IMAGE = 200;
     final int NETWORK_URL = 300;
     final CharSequence[] oItems = {"갤러리", "사진촬영"};
+    private static final int DIALOG_ID = 15979;
     int position;
 
     EditText title;
@@ -63,7 +65,18 @@ public class EditActivity extends AppCompatActivity {
         final EditText editText = new EditText(this);
         editText.setHint("url");
 
-        oDialog.setTitle("이미지 불러오기").setView(editText).setPositiveButton("입력",
+        oDialog.setTitle("이미지 불러오기").setView(editText).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+            @Override
+
+            public void onClick(DialogInterface dialog, int button) {
+
+                dialog.dismiss();
+
+            }
+
+        }).
+                setPositiveButton("확인",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         String uri = editText.getText().toString();
@@ -80,7 +93,17 @@ public class EditActivity extends AppCompatActivity {
                         }
                         Toast.makeText(getApplicationContext(),editText.getText().toString() ,Toast.LENGTH_LONG).show();
                     }
-                })
+                }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+            @Override
+
+            public void onCancel(DialogInterface dialog) {
+
+                dialog.dismiss();
+
+            }
+
+        })
                 .setItems(oItems, new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -96,6 +119,8 @@ public class EditActivity extends AppCompatActivity {
                             startActivityForResult(cameraIntent, CAPTURE_IMAGE);
 
                         }
+                        dialog.dismiss();
+
                     }
                 })
                 .setCancelable(true);
@@ -116,7 +141,7 @@ public class EditActivity extends AppCompatActivity {
         imageButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                oDialog.show();
+                showDialog(DIALOG_ID);
             }
         });
 
@@ -128,15 +153,33 @@ public class EditActivity extends AppCompatActivity {
                 newNote.setContent(content.getText().toString());
                 if(position > -1) {
                     Data.getInstance().modifyNote(position, newNote);
+                    Snackbar.make(view, "노트가 변경되었습니다.", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                 } else {
                     Data.getInstance().addNote(newNote);
+                    Snackbar.make(view, "새 노트가 추가되었습니다.", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                 }
-                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
                 Intent intent = new Intent(EditActivity.this,MainActivity.class);
                 startActivity(intent);
             }
         });
+    }
+    @Override
+    protected Dialog onCreateDialog(int id, Bundle bundle) {
+
+        switch (id) {
+
+            case DIALOG_ID:
+
+                return oDialog.show();
+
+            default:
+
+                return super.onCreateDialog(id, bundle);
+
+        }
+
     }
     public void addImageView(Bitmap img, final String id) {
         if(img == null) {
