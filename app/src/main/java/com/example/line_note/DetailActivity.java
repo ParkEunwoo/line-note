@@ -18,14 +18,15 @@ public class DetailActivity extends AppCompatActivity {
     TextView content;
     LinearLayout imageList;
     Button button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        title=findViewById(R.id.title);
-        content=findViewById(R.id.content);
-        imageList=findViewById(R.id.imageList);
-        button=findViewById(R.id.edit);
+        title = findViewById(R.id.title);
+        content = findViewById(R.id.content);
+        imageList = findViewById(R.id.imageList);
+        button = findViewById(R.id.edit);
 
         Intent intent = getIntent();
         final int position = intent.getIntExtra("position", 0);
@@ -35,7 +36,7 @@ public class DetailActivity extends AppCompatActivity {
         content.setText(note.getContent());
 
         int size = note.getImageNum();
-        for(int i=0;i<size;i++) {
+        for (int i = 0; i < size; i++) {
             ImageView newImageView = new ImageView(this);
             newImageView.setImageBitmap(note.getImage(i, this));
             newImageView.setLayoutParams(new LinearLayout.LayoutParams(getDpSize(100), getDpSize(100)));
@@ -45,12 +46,13 @@ public class DetailActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DetailActivity.this,EditActivity.class);
+                Intent intent = new Intent(DetailActivity.this, EditActivity.class);
                 intent.putExtra("position", position);
                 startActivityForResult(intent, 1);
             }
         });
     }
+
     public int getDpSize(int size) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, getResources().getDisplayMetrics());
     }

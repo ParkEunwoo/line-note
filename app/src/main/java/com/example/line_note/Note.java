@@ -46,7 +46,7 @@ public class Note {
         try {
             file.createNewFile();
             outputStream = new FileOutputStream(file);
-            image.compress(Bitmap.CompressFormat.JPEG,10,outputStream);
+            image.compress(Bitmap.CompressFormat.JPEG, 20, outputStream);
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,15 +61,17 @@ public class Note {
         images.remove(position);
     }
 
-    public String getTitle(){
+    public String getTitle() {
         return title;
     }
 
-    public String getContent(){
+    public String getContent() {
         return content;
     }
 
-    public int getImageNum() {return images.size(); }
+    public int getImageNum() {
+        return images.size();
+    }
 
     public Bitmap getImage(int position, Context context) {
         String filename = images.get(position);
@@ -78,23 +80,21 @@ public class Note {
         return image;
     }
 
-    public String getShortContent(){
-        if(content.length() > 20){
+    public String getShortContent() {
+        if (content.length() > 20) {
             return content.substring(0, 20);
         } else {
             return content;
         }
     }
 
-    public Bitmap getThumbnail(Context context){
-        if(getImageNum()>0) {
+    public Bitmap getThumbnail(Context context) {
+        if (getImageNum() > 0) {
             return getImage(0, context);
         } else {
             return null;
         }
     }
-
-
 
 
 }

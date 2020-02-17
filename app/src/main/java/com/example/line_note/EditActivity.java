@@ -96,6 +96,7 @@ public class EditActivity extends AppCompatActivity {
                                             @Override
                                             public void onLoadCleared(@Nullable Drawable placeholder) {
                                             }
+
                                             @Override
                                             public void onLoadFailed(@Nullable Drawable errorDrawable) {
                                                 Toast.makeText(getApplicationContext(), "이미지를 불러올 수 없습니다.", Toast.LENGTH_LONG).show();
@@ -264,32 +265,4 @@ public class EditActivity extends AppCompatActivity {
 
     }
 
-    private Bitmap resize(Context context, Uri uri, int resize) {
-        Bitmap resizeBitmap = null;
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        try {
-            BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options); // 이미지의 크기를 options 에 담아줌
-
-            int width = options.outWidth;
-            int height = options.outHeight;
-            int samplesize = 1; // 숫자가 클수록 용량이 작아짐, 4 라고 하면 4픽셀을 1픽셀로 만들어줌
-
-            while (true) { //가로세로 크기를 리사이즈크기에 최대한 맞춰서 작을때까지 반복함.
-                if (width / 2 < resize || height / 2 < resize)
-                    break;
-                width /= 2;
-                height /= 2;
-                samplesize *= 2;
-            }
-
-            options.inSampleSize = samplesize;
-            Bitmap bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options); //정해진 샘플사이즈로 비트맵을 다시만든다
-            resizeBitmap = bitmap;
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return resizeBitmap;
-    }
 }

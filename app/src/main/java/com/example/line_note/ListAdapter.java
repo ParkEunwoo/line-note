@@ -33,7 +33,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         ImageView thumbnail;
 
         ViewHolder(View itemView) {
-            super(itemView) ;
+            super(itemView);
 
             title = itemView.findViewById(R.id.title);
             content = itemView.findViewById(R.id.content);
@@ -42,7 +42,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext,DetailActivity.class);
+                    Intent intent = new Intent(mContext, DetailActivity.class);
                     intent.putExtra("position", getAdapterPosition());
                     mContext.startActivity(intent);
                 }
@@ -53,22 +53,22 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext() ;
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) ;
+        Context context = parent.getContext();
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View view = inflater.inflate(R.layout.recyclerview_item, parent, false) ;
-        ListAdapter.ViewHolder vh = new ListAdapter.ViewHolder(view) ;
+        View view = inflater.inflate(R.layout.recyclerview_item, parent, false);
+        ListAdapter.ViewHolder vh = new ListAdapter.ViewHolder(view);
 
-        return vh ;
+        return vh;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Note note = mData.get(position);
         Bitmap img = note.getThumbnail(mContext);
-        holder.title.setText(note.getTitle()) ;
-        holder.content.setText(note.getShortContent()) ;
-        if(img == null) {
+        holder.title.setText(note.getTitle());
+        holder.content.setText(note.getShortContent());
+        if (img == null) {
             holder.thumbnail.setBackgroundResource(R.drawable.ic_no_image);
         } else {
             holder.thumbnail.setImageBitmap(img);

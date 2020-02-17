@@ -43,18 +43,18 @@ public class MainActivity extends AppCompatActivity {
         Data.getInstance().initContext(this);
         ArrayList<Note> list = Data.getInstance().getNoteList();
 
-        RecyclerView recyclerView = findViewById(R.id.noteList) ;
-        recyclerView.setLayoutManager(new LinearLayoutManager(this)) ;
+        RecyclerView recyclerView = findViewById(R.id.noteList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-        ListAdapter adapter = new ListAdapter(this, list) ;
-        recyclerView.setAdapter(adapter) ;
+        ListAdapter adapter = new ListAdapter(this, list);
+        recyclerView.setAdapter(adapter);
 
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,EditActivity.class);
+                Intent intent = new Intent(MainActivity.this, EditActivity.class);
                 startActivityForResult(intent, 1);
             }
         });

@@ -20,7 +20,7 @@ import java.util.List;
 
 public class Data {
     private static final Data ourInstance = new Data();
-    private ArrayList<Note>  noteList;
+    private ArrayList<Note> noteList;
     private Context context;
 
     public static Data getInstance() {
@@ -28,15 +28,16 @@ public class Data {
     }
 
     public void initContext(Context ctx) {
-        if(context == null){
-            context=ctx;
+        if (context == null) {
+            context = ctx;
             loadData(ctx);
         }
     }
 
-    public ArrayList<Note> getNoteList(){
+    public ArrayList<Note> getNoteList() {
         return noteList;
     }
+
     public Note getNote(int position) {
         return noteList.get(position);
     }
@@ -59,27 +60,22 @@ public class Data {
     private Data() {
         noteList = new ArrayList<Note>();
         context = null;
-        /*for (int i=0; i<5; i++) {
-            Note note = new Note();
-            note.setTitle("제목");
-            note.setContent("내용");
-            noteList.add(note);
-        }*/
     }
 
-    private String toJson () {
+    private String toJson() {
         Gson gson = new Gson();
         String json = gson.toJson(noteList);
         return json;
     }
 
-    private ArrayList<Note> parseJson(String json){
+    private ArrayList<Note> parseJson(String json) {
         Gson gson = new Gson();
-        ArrayList<Note> list = gson.fromJson(json, new TypeToken<ArrayList<Note>>(){}.getType());
+        ArrayList<Note> list = gson.fromJson(json, new TypeToken<ArrayList<Note>>() {
+        }.getType());
         return list;
     }
 
-    public void saveData(Context context){
+    public void saveData(Context context) {
         String filename = "data.json";
         String fileContents = toJson();
         FileOutputStream outputStream;
@@ -104,14 +100,14 @@ public class Data {
         if (file.exists() && file.canRead()) {
             try {
                 // open file.
-                inputStream = new FileInputStream(file) ;
+                inputStream = new FileInputStream(file);
 
                 size = inputStream.available();
-                if(size == 0) {
+                if (size == 0) {
                     return;
                 }
-                if(size < 512){
-                    buf = new byte[size] ;
+                if (size < 512) {
+                    buf = new byte[size];
                 } else {
                     buf = new byte[512];
                 }
@@ -123,9 +119,9 @@ public class Data {
                 noteList = parseJson(data);
 
                 // close file.
-                inputStream.close() ;
+                inputStream.close();
             } catch (Exception e) {
-                e.printStackTrace() ;
+                e.printStackTrace();
             }
         }
 
